@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection string from environment variables
-const mongoURI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
+const mongoURI = process.env.MONGO_URI;
 
 // MongoDB connection
 mongoose.connect(mongoURI)
@@ -88,21 +88,7 @@ app.post('/auth/login', async (req, res) => {
         const token = jwt.sign({ email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '1h' });
 
         // Send thank-you email on login
-        sendEmail(email, 'Thank You for Logging In', <div style="max-width: 600px; margin: 50px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-            <div style="text-align: center; background-color: #4CAF50; padding: 10px; border-radius: 8px 8px 0 0;">
-                <h1 style="color: white; margin: 0;">Welcome to Skin.AI</h1>
-            </div>
-            <div style="padding: 20px; color: #333333;">
-                <h2 style="color: #4CAF50;">Login Successful</h2>
-                <p>Hello,</p>
-                <p>Thank you for logging in to your Skin.AI account! We're happy to have you back.</p>
-                <p>If you have any questions, feel free to reply to this email. We're here to help!</p>
-            </div>
-            <div style="text-align: center; padding: 10px; background-color: #f4f4f4; border-radius: 0 0 8px 8px;">
-                <p style="font-size: 12px; color: #777777;">&copy; 2024 Skin.AI. All rights reserved.</p>
-            </div>
-        </div>
-        );
+        sendEmail(email, login);
 
         return res.json({ message: 'Logged in successfully', token });
     } catch (error) {
